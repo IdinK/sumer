@@ -14,10 +14,11 @@ def get_month_name(number, abr=False):
 
 def get_month_num(name):
 	months_map = {
-		'jan':1, 'feb':2, 'mar':3, 'apr':4, 'may':5, 'jun':6,
-		'jul':7, 'aug':8, 'sep':9, 'oct':10, 'nov':11, 'dec':12
+		'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
+		'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12
 	}
 	return months_map[str(name).lower()[:3]]
+
 
 def get_months_list(abr=False):
 	return [get_month_name(abr=abr, number=i) for i in range(1, 13)]
