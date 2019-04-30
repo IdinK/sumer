@@ -6,3 +6,4 @@ from .get_time import get_now, get_today, get_today_str, sleep, get_time, get_da
 from .get_elapsed import get_elapsed_seconds, get_elapsed, get_elapsed_days
 from .YearMonth import YearMonth
 from .Timer import Timer
+from .get_number_of_days import get_number_of_days
