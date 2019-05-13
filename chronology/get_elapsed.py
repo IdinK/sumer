@@ -13,24 +13,37 @@ def _get_elapsed(start, end=None):
 	return end - start
 
 
-def get_elapsed_seconds(start, end=None):
-	"""
-	:type start: datetime
-	:type end: datetime or NoneType
-	:rtype: float
-	"""
-	delta = _get_elapsed(start=start, end=end)
-	return delta.days*SECONDS_IN_A_DAY + delta.seconds + delta.microseconds / 1E6
+def convert(delta, to_unit='timedelta'):
+	u = to_unit[0].lower()
+	if u == 't':
+		return delta
 
+	# microsecond
+	elif to_unit[:2] == 'us' or to_unit[:3] == 'mic':
+		return delta.days*SECONDS_IN_A_DAY*1e6 + delta.seconds*1e6 + delta.microseconds
 
-def get_elapsed_days(start, end=None):
-	"""
-	:type start: datetime
-	:type end: datetime or NoneType
-	:rtype: float
-	"""
-	delta = _get_elapsed(start=start, end=end)
-	return delta.days + delta.seconds/SECONDS_IN_A_DAY + delta.microseconds / 1E6 / SECONDS_IN_A_DAY
+	# millisecond
+	elif to_unit[:2] == 'ms' or to_unit[:3] == 'mil':
+		return delta.days*SECONDS_IN_A_DAY*1e3 + delta.seconds*1e3 + delta.microseconds / 1E3
+
+	# second
+	elif u == 's':
+		return delta.days*SECONDS_IN_A_DAY + delta.seconds + delta.microseconds / 1E6
+
+	# minute
+	elif to_unit[:3] == 'min':
+		return (delta.days*SECONDS_IN_A_DAY + delta.seconds + delta.microseconds / 1E6) / 60
+
+	# hour
+	elif u == 'h':
+		return (delta.days*SECONDS_IN_A_DAY + delta.seconds + delta.microseconds / 1E6) / 3600
+
+	# day
+	elif u == 'd':
+		return delta.days + delta.seconds/SECONDS_IN_A_DAY + delta.microseconds / 1E6 / SECONDS_IN_A_DAY
+
+	else:
+		raise ValueError(f'Cannot convert time delta to {to_unit}')
 
 
 def get_elapsed_months(start, end=None):
@@ -56,26 +69,15 @@ def get_elapsed(start, end=None, unit='timedelta'):
 	"""
 	:param datetime start: start time
 	:param datetime or NoneType end: end time, the current time is used if not provided (None entered)
-	:param str unit: one of 'timedelta', 'seconds', 'minutes', 'hours', 'days', 'months', or 'years'
+	:param str unit: 'timedelta', 'seconds', 'ms' (milliseconds), 'minutes', 'hours', 'days', 'months', or 'years'
 	:rtype: float
 	"""
-
-	u = unit[0].lower()
-	if u == 't':
-		return _get_elapsed(start=start, end=end)
-	elif u == 's':
-		return get_elapsed_seconds(start=start, end=end)
-	elif u == 'd':
-		return get_elapsed_days(start=start, end=end)
-	elif u == 'm':
-		if unit[:2] == 'mi':  		# minutes
-			return get_elapsed_seconds(start=start, end=end)/60.0
-		elif unit[:2] == 'mo':  	# months
-			return get_elapsed_months(start=start, end=end)
-		else:
-			raise ValueError(f'unit:{unit} is not recognizable.')
-	elif u == 'h':
-		return get_elapsed_seconds(start=start, end=end)/3600.0
+	unit = unit.lower()
+	u = unit[0]
+	if u in ['t', 's', 'd', 'h'] or unit[:2] == 'ms' or unit[:3] == 'min':
+		return convert(delta=_get_elapsed(start=start, end=end), to_unit=unit)
+	elif unit[:2] == 'mo':  	# months
+		return get_elapsed_months(start=start, end=end)
 	elif u == 'y':
 		return get_elapsed_years(start=start, end=end)
 	else:
