@@ -3,7 +3,7 @@ from datetime import timedelta
 
 class TimeMeasurement:
 	def __init__(self, duration=None, unit='ms', count=1):
-		self._duration = duration or timedelta()
+		self._duration = duration
 		self._count = count
 		self._unit = unit
 
@@ -47,4 +47,12 @@ class TimeMeasurement:
 
 		if other is None or other == 0:
 			return self.copy()
-		return self.__class__(duration=self.duration - other.duration, count=self.count - other.count)
+
+		if other.duration is None:
+			duration = self.duration
+		elif self.duration is None:
+			duration = other.duration
+		else:
+			duration = self.duration + other.duration
+
+		return self.__class__(duration=duration, count=self.count - other.count)

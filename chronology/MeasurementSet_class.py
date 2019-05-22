@@ -71,7 +71,7 @@ class MeasurementSet:
 		data = DataFrame({'name': names, 'total_duration': total_durations, 'unit': units, 'count': counts})
 		data['mean_duration'] = data['total_duration'] / data['count']
 
-		return data
+		return data.sort_values('total_duration', ascending=False).reset_index(drop=True)
 
 	def measure(self, function, name, unit='ms'):
 		"""
