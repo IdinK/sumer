@@ -3,8 +3,8 @@ from .NumberPart import NumberPart
 
 
 class FlexibleNumber:
-	def __init__(self, parts = [], labels = None, sep = '-'):
-		self._parts = parts
+	def __init__(self, parts=None, labels=None, sep='-'):
+		self._parts = parts or []
 		self._sep = sep
 
 		if labels is None:
@@ -17,6 +17,14 @@ class FlexibleNumber:
 		if len(labels) != len(set(labels)):
 			raise ValueError("labels are not unique")
 
+	def __hashkey__(self):
+		return (self.__class__.__name__, self.__getstate__())
+
+	def __getstate__(self):
+		return (self._parts, self._sep, self._labels)
+
+	def __setstate__(self, state):
+		self._parts, self._sep, self._labels = state
 
 	@property
 	def parts(self):

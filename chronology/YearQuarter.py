@@ -33,8 +33,6 @@ class YearQuarter(FlexibleNumber):
 		super().__init__(parts=[year_part, quarter_part], labels=['year', 'quarter'], sep=sep)
 		self.adjust()
 
-
-
 	@property
 	def year(self):
 		return self.get('year')

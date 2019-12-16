@@ -25,6 +25,15 @@ class NumberPart:
 		self._carry=0
 		self.adjust()
 
+	def __hashkey__(self):
+		return (self.__class__.__name__, self.__getstate__())
+
+	def __getstate__(self):
+		return (self.base, self.value, self.start, self.digits, self.carry)
+
+	def __setstate__(self, state):
+		self._base, self._value, self._start, self._digits, self._carry = state
+
 	def adjust(self):
 		if self.base is not None:
 			self._carry += (self._value - self._start) // self._base
@@ -98,5 +107,7 @@ class NumberPart:
 		result._carry += self.carry - other.carry
 		return result
 
-
-
+	def __mul__(self, other):
+		result = self.__class__(value=self.value*other, base=self.base, start=self.start, digits=self.digits)
+		result._carry = self._carry*other
+		return result

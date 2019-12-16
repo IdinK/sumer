@@ -8,8 +8,16 @@ class Timer:
 		self._unit = unit
 		self._start_time = None
 		self._duration = None
+		self._end_time = None
+
+		self._last_start = None
+		self._last_end = None
+
 		if start_now:
 			self.start()
+
+	def __hashkey__(self):
+		return (self.__class__.__name__, self.unit, self._start_time, self._duration, self._end_time)
 
 	def start(self):
 		"""
@@ -18,23 +26,34 @@ class Timer:
 		if self._start_time is not None:
 			raise RuntimeError('Timer has already started!')
 		self._duration = None
+		self._last_end = self._end_time
+		self._end_time = None
 		self._start_time = get_now()
-
-	def pause(self):
-		self._duration += self.get_elapsed()
-		self._start_time = None
 
 	def reset_timer(self):
 		"""
 		:rtype: NoneType
 		"""
+		self._last_start = self._start_time
+		self._last_end = self._end_time
 		self._start_time = None
+		self._end_time = None
 
-	def get_elapsed(self):
+	@property
+	def last_start(self):
+		return self._last_start
+
+	@property
+	def last_end(self):
+		return self._last_end
+
+	def get_elapsed(self, end_time=None):
 		"""
 		:rtype: float or timedelta
 		"""
-		now = get_now()
+		if end_time is None:
+			end_time = get_now()
+		now = end_time
 		if self._start_time is not None:
 			if self._duration is None:
 				return get_elapsed(start=self._start_time, end=now, unit=self._unit)
@@ -47,7 +66,8 @@ class Timer:
 		"""
 		:rtype: NoneType
 		"""
-		self._duration = self.get_elapsed()
+		self._end_time = get_now()
+		self._duration = self.get_elapsed(end_time=self._end_time)
 		self.reset_timer()
 
 	@property

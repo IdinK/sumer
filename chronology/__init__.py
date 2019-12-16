@@ -6,6 +6,7 @@ from .get_time import get_now, get_today, get_today_str, sleep, get_time, get_da
 from .get_elapsed import get_elapsed, convert
 from .YearMonth import YearMonth
 from .get_number_of_days import get_number_of_days
-from .Timer_class import Timer
-from .MeasurementSet_class import MeasurementSet
-from .measure_function import measure
+from .Timer import Timer
+from .MeasurementSet import MeasurementSet
+from .measure import measure
+from .convert_string_to_date import convert_string_to_date

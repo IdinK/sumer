@@ -1,4 +1,4 @@
-from .Timer_class import Timer
+from .Timer import Timer
 
 import functools
 
